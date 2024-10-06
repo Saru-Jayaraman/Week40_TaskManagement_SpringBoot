@@ -15,10 +15,12 @@ import java.util.stream.Collectors;
 @Component
 public class UserConverterImpl implements UserConverter {
 
+    RoleConverter roleConverter;
     CustomPasswordEncoder customPasswordEncoder;
 
     @Autowired
-    public UserConverterImpl(CustomPasswordEncoder customPasswordEncoder) {
+    public UserConverterImpl(RoleConverter roleConverter, CustomPasswordEncoder customPasswordEncoder) {
+        this.roleConverter = roleConverter;
         this.customPasswordEncoder = customPasswordEncoder;
     }
 
@@ -32,13 +34,23 @@ public class UserConverterImpl implements UserConverter {
     }
 
     @Override
+    public User toUserEntityWithoutRoles(UserDTOForm dto) {
+        Set<Role> roles = dto.getRoles()
+                .stream()
+                .map(role -> roleConverter.toRoleEntity(role))
+                .collect(Collectors.toSet());
+        return User.builder()
+                .email(dto.getEmail())
+                .password(dto.getPassword())
+                .roles(roles)
+                .build();
+    }
+
+    @Override
     public UserDTOView toUserDTOView(User entity) {
         Set<RoleDTOFormView> roleDTOFormViews = entity.getRoles()
                 .stream()
-                .map(role -> RoleDTOFormView.builder()
-                        .id(role.getId())
-                        .name(role.getName())
-                        .build())
+                .map(role -> roleConverter.toRoleDTOView(role))
                 .collect(Collectors.toSet());
         return UserDTOView.builder()
                 .email(entity.getEmail())

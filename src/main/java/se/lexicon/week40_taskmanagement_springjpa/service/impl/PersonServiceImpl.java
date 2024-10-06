@@ -1,4 +1,69 @@
 package se.lexicon.week40_taskmanagement_springjpa.service.impl;
 
-public class PersonServiceImpl {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import se.lexicon.week40_taskmanagement_springjpa.converter.PersonConverter;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.PersonDTOFormSave;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.PersonDTOFormView;
+import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Person;
+import se.lexicon.week40_taskmanagement_springjpa.exception.DataNotFoundException;
+import se.lexicon.week40_taskmanagement_springjpa.repository.PersonRepository;
+import se.lexicon.week40_taskmanagement_springjpa.service.PersonService;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+@Service
+public class PersonServiceImpl implements PersonService {
+
+    PersonRepository personRepository;
+    PersonConverter personConverter;
+
+    @Autowired
+    public PersonServiceImpl(PersonRepository personRepository, PersonConverter personConverter) {
+        this.personRepository = personRepository;
+        this.personConverter = personConverter;
+    }
+
+    @Override
+    public PersonDTOFormView savePerson(PersonDTOFormSave dtoFormSave) {
+        if(dtoFormSave == null)
+            throw new IllegalArgumentException("Person Save Form is null/empty...");
+        Person personEntity = personConverter.toPersonEntitySave(dtoFormSave);
+        Person savedPerson = personRepository.save(personEntity);
+        return personConverter.toPersonDTOView(savedPerson);
+    }
+
+    @Override
+    public List<PersonDTOFormView> getAll() {
+        List<Person> personEntities = personRepository.findAll();
+        List<PersonDTOFormView> personDTOViews = new ArrayList<>();
+        for(Person eachPerson : personEntities) {
+            personDTOViews.add(personConverter.toPersonDTOView(eachPerson));
+        }
+        return personDTOViews;
+    }
+
+
+    @Override
+    public List<PersonDTOFormView> findPersonsWithNoTasks() {
+        List<Person> personEntities = personRepository.findPersonsWithNoTasks();
+        List<PersonDTOFormView> personDTOViews = new ArrayList<>();
+        for(Person eachPerson : personEntities) {
+            personDTOViews.add(personConverter.toPersonDTOView(eachPerson));
+        }
+        return personDTOViews;
+    }
+
+    @Override
+    public PersonDTOFormView findPersonByUserEmail(String email) {
+        if(Objects.requireNonNull(email).trim().isEmpty())
+            throw new IllegalArgumentException("Email is either null/empty...");
+        Optional<Person> personOptional = personRepository.findByUser_Email(email);
+        if(personOptional.isEmpty())
+            throw new DataNotFoundException("Person not found... Check the entered email id...");
+        return personConverter.toPersonDTOView(personOptional.get());
+    }
 }

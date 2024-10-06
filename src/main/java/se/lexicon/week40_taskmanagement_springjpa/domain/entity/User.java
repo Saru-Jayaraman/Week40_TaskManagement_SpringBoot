@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "roles")
+@ToString(exclude = {"roles", "password"})
 @EqualsAndHashCode(exclude = "roles")
 @Builder
 @Entity

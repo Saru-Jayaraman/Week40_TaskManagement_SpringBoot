@@ -10,5 +10,7 @@ import java.util.Set;
 public interface UserConverter {
     User toUserEntity(UserDTOForm dto, Set<Role> roleEntities);
 
+    User toUserEntityWithoutRoles(UserDTOForm dto);
+
     UserDTOView toUserDTOView(User entity);
 }

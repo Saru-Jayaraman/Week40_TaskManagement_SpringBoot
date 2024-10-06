@@ -12,6 +12,7 @@ import se.lexicon.week40_taskmanagement_springjpa.service.RoleService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -36,15 +37,19 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public Optional<RoleDTOFormView> findByName(String name) {
+    public RoleDTOFormView findByName(String name) {
+        if(Objects.requireNonNull(name).trim().isEmpty())
+            throw new IllegalArgumentException("Role name is either null/empty...");
         Optional<Role> roleEntity = roleRepository.findByName(name);
         if(roleEntity.isEmpty())
             throw new DataNotFoundException("Role not found...");
-        return Optional.ofNullable(roleConverter.toRoleDTOView(roleEntity.get()));
+        return roleConverter.toRoleDTOView(roleEntity.get());
     }
 
     @Override
-    public RoleDTOFormView saveName(RoleDTOFormSave dtoSaveForm) {
+    public RoleDTOFormView saveRole(RoleDTOFormSave dtoSaveForm) {
+        if(dtoSaveForm == null)
+            throw new IllegalArgumentException("Role Form for Save operation is either null/empty...");
         Role roleViewForm = roleConverter.toRoleEntitySave(dtoSaveForm);
         Role savedRole = roleRepository.save(roleViewForm);
         return roleConverter.toRoleDTOView(savedRole);

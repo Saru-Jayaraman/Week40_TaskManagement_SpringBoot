@@ -6,11 +6,11 @@ import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Role;
 
 public interface RoleConverter {
-    Role toRoleEntity(RoleDTOFormView dto);
+    Role toRoleEntitySave(RoleDTOFormSave dto);
+
+    Role toRoleEntity(RoleDTOForm dto);
 
     RoleDTOFormView toRoleDTOView(Role entity);
-
-    Role toRoleEntitySave(RoleDTOFormSave dto);
 
     RoleDTOForm toRoleDTOForm(RoleDTOFormView viewDTO);
 }

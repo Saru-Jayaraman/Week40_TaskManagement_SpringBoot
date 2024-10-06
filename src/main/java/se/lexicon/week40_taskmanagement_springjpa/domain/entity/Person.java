@@ -33,6 +33,11 @@ public class Person {
         this.name = name;
     }
 
+    public Person(String name, User user) {
+        this.name = name;
+        this.user = user;
+    }
+
     public void addTask(Task... tasks) {
         if(Objects.requireNonNull(tasks).length == 0)
             throw new IllegalArgumentException("Tasks are either null/empty...");
