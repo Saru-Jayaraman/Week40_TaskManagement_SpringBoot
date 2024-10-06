@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>se.lexicon</groupId>
-    <artifactId>Week40_TaskManagement_SpringDataJPA</artifactId>
+    <artifactId>Week40_TaskManagement_SpringBoot</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Week39_TaskManagement_SpringJPA</name>
     <description>Week39_TaskManagement_SpringJPA</description>

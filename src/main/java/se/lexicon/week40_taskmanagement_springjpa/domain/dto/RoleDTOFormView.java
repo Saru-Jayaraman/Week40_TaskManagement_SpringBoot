@@ -6,8 +6,9 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
-public class RoleDTOView {
+public class RoleDTOFormView {
     private Long id;
     private String name;
 }

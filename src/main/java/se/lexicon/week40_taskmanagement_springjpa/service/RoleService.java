@@ -1,12 +1,15 @@
 package se.lexicon.week40_taskmanagement_springjpa.service;
 
-import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOView;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormSave;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormView;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface RoleService {
-    List<RoleDTOView> getAll();
+    List<RoleDTOFormView> getAll();
 
-    Optional<RoleDTOView> findByName(String name);
+    Optional<RoleDTOFormView> findByName(String name);
+
+    RoleDTOFormView saveName(RoleDTOFormSave dtoSaveForm);
 }

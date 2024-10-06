@@ -12,6 +12,7 @@ import se.lexicon.week40_taskmanagement_springjpa.exception.DataNotFoundExceptio
 import se.lexicon.week40_taskmanagement_springjpa.repository.RoleRepository;
 import se.lexicon.week40_taskmanagement_springjpa.repository.UserRepository;
 import se.lexicon.week40_taskmanagement_springjpa.service.UserService;
+import se.lexicon.week40_taskmanagement_springjpa.util.CustomPasswordEncoder;
 
 import java.util.Objects;
 import java.util.Set;
@@ -23,12 +24,14 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
     UserRepository userRepository;
     UserConverter userConverter;
+    CustomPasswordEncoder customPasswordEncoder;
 
     @Autowired
-    public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, UserConverter userConverter) {
+    public UserServiceImpl(RoleRepository roleRepository, UserRepository userRepository, UserConverter userConverter, CustomPasswordEncoder customPasswordEncoder) {
         this.roleRepository = roleRepository;
         this.userRepository = userRepository;
         this.userConverter = userConverter;
+        this.customPasswordEncoder = customPasswordEncoder;
     }
 
     @Override
@@ -60,7 +63,7 @@ public class UserServiceImpl implements UserService {
         isEmailTaken(email);
         if(Objects.requireNonNull(password).trim().isEmpty())
             throw new IllegalArgumentException("Password is either null/empty...");
-        int updatedRows = userRepository.updatePasswordByEmail(email, password);
+        int updatedRows = userRepository.updatePasswordByEmail(email, customPasswordEncoder.encode(password));
         if(updatedRows != 1)
             throw new IllegalArgumentException("Password not updated...");
         System.out.println("Password updated successfully!!!");

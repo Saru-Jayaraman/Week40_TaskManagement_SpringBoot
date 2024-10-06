@@ -3,7 +3,8 @@ package se.lexicon.week40_taskmanagement_springjpa.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.lexicon.week40_taskmanagement_springjpa.converter.RoleConverter;
-import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOView;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormSave;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Role;
 import se.lexicon.week40_taskmanagement_springjpa.exception.DataNotFoundException;
 import se.lexicon.week40_taskmanagement_springjpa.repository.RoleRepository;
@@ -25,20 +26,27 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleDTOView> getAll() {
+    public List<RoleDTOFormView> getAll() {
         List<Role> roleEntities = roleRepository.findAll();
-        List<RoleDTOView> roleDTOViews = new ArrayList<>();
+        List<RoleDTOFormView> roleDTOFormViews = new ArrayList<>();
         for(Role eachEntity : roleEntities) {
-            roleDTOViews.add(roleConverter.toRoleDTOView(eachEntity));
+            roleDTOFormViews.add(roleConverter.toRoleDTOView(eachEntity));
         }
-        return roleDTOViews;
+        return roleDTOFormViews;
     }
 
     @Override
-    public Optional<RoleDTOView> findByName(String name) {
+    public Optional<RoleDTOFormView> findByName(String name) {
         Optional<Role> roleEntity = roleRepository.findByName(name);
         if(roleEntity.isEmpty())
             throw new DataNotFoundException("Role not found...");
         return Optional.ofNullable(roleConverter.toRoleDTOView(roleEntity.get()));
+    }
+
+    @Override
+    public RoleDTOFormView saveName(RoleDTOFormSave dtoSaveForm) {
+        Role roleViewForm = roleConverter.toRoleEntitySave(dtoSaveForm);
+        Role savedRole = roleRepository.save(roleViewForm);
+        return roleConverter.toRoleDTOView(savedRole);
     }
 }

@@ -2,7 +2,7 @@ package se.lexicon.week40_taskmanagement_springjpa.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOView;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.UserDTOForm;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.UserDTOView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Role;
@@ -33,16 +33,16 @@ public class UserConverterImpl implements UserConverter {
 
     @Override
     public UserDTOView toUserDTOView(User entity) {
-        Set<RoleDTOView> roleDTOViews = entity.getRoles()
+        Set<RoleDTOFormView> roleDTOFormViews = entity.getRoles()
                 .stream()
-                .map(role -> RoleDTOView.builder()
+                .map(role -> RoleDTOFormView.builder()
                         .id(role.getId())
                         .name(role.getName())
                         .build())
                 .collect(Collectors.toSet());
         return UserDTOView.builder()
                 .email(entity.getEmail())
-                .roles(roleDTOViews)
+                .roles(roleDTOFormViews)
                 .build();
     }
 }

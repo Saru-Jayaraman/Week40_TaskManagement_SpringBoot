@@ -21,7 +21,7 @@ public class User {
     @Column(unique = true, nullable = false, updatable = false, length = 60)
     private String email;
 
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false, length = 100)
     private String password;
 
     private boolean expired;
