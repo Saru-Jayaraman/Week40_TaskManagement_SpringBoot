@@ -43,6 +43,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("----------------------------FIND BY USERNAME----------------------------");
         Optional<RoleDTOFormView> findByRoleName = roleService.findByName(savedUser1.getName());
         findByRoleName.ifPresent(System.out::println);
+        System.out.println();
 
         List<RoleDTOForm> allRolesForm = new ArrayList<>();
         for(RoleDTOFormView eachDTO : allRolesFormView) {
@@ -71,5 +72,6 @@ public class DataLoader implements CommandLineRunner {
 
         System.out.println("-----------------------------ENABLE EXPIRED-----------------------------");
         userService.enableByEmail(userDTOForm1.getEmail());
+        System.out.println();
     }
 }

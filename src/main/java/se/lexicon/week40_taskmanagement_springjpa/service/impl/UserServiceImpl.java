@@ -60,9 +60,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(String email, String password) {
+        validateParams(email, "Email");
+        validateParams(password, "Password");
         isEmailTaken(email);
-        if(Objects.requireNonNull(password).trim().isEmpty())
-            throw new IllegalArgumentException("Password is either null/empty...");
         int updatedRows = userRepository.updatePasswordByEmail(email, customPasswordEncoder.encode(password));
         if(updatedRows != 1)
             throw new IllegalArgumentException("Password not updated...");
@@ -71,12 +71,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTOView getByEmail(String email) {
+        validateParams(email, "Email");
         User user = userRepository.findById(email).orElseThrow(() -> new DataNotFoundException("Email not found..."));
         return userConverter.toUserDTOView(user);
     }
 
     @Override
     public void disableByEmail(String email) {
+        validateParams(email, "Email");
         isEmailTaken(email);
         int updatedRows = userRepository.updateExpiredByEmail(email, true);
         if(updatedRows != 1)
@@ -86,6 +88,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void enableByEmail(String email) {
+        validateParams(email, "Email");
         isEmailTaken(email);
         int updatedRows = userRepository.updateExpiredByEmail(email, false);
         if(updatedRows != 1)
@@ -96,5 +99,11 @@ public class UserServiceImpl implements UserService {
     private void isEmailTaken(String email) {
         if(!userRepository.existsByEmail(email))
             throw new DataNotFoundException("Email not found...");
+    }
+
+    private void validateParams(String param, String paramName) {
+        if(Objects.requireNonNull(param).trim().isEmpty())
+            throw new IllegalArgumentException(paramName + " is either null/empty...");
+
     }
 }
