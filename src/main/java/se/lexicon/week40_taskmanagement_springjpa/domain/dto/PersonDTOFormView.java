@@ -1,7 +1,6 @@
 package se.lexicon.week40_taskmanagement_springjpa.domain.dto;
 
 import lombok.*;
-import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Task;
 
 import java.util.List;
 
@@ -14,6 +13,6 @@ import java.util.List;
 public class PersonDTOFormView {
     private Long id;
     private String name;
-    private List<Task> taskList;
+    private List<TaskDTOFormView> taskList;
     private UserDTOView user;
 }

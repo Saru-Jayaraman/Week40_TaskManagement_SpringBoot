@@ -12,5 +12,9 @@ public interface RoleConverter {
 
     RoleDTOFormView toRoleDTOView(Role entity);
 
+    RoleDTOFormView toRoleDTOViewForm(RoleDTOForm entity);
+
     RoleDTOForm toRoleDTOForm(RoleDTOFormView viewDTO);
+
+    RoleDTOForm toRoleDTOFormEntity(Role entity);
 }

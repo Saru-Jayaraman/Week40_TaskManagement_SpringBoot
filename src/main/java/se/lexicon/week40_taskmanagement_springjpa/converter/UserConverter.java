@@ -13,4 +13,10 @@ public interface UserConverter {
     User toUserEntityWithoutRoles(UserDTOForm dto);
 
     UserDTOView toUserDTOView(User entity);
+
+    UserDTOView toUserDTOViewForm(UserDTOForm dto);
+
+    UserDTOForm toUserDTOForm(UserDTOView dto);
+
+    UserDTOForm toUserDTOFormEntity(User entity);
 }

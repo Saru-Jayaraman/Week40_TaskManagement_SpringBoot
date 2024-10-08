@@ -2,6 +2,7 @@ package se.lexicon.week40_taskmanagement_springjpa.converter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOForm;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.RoleDTOFormView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.UserDTOForm;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.UserDTOView;
@@ -35,26 +36,62 @@ public class UserConverterImpl implements UserConverter {
 
     @Override
     public User toUserEntityWithoutRoles(UserDTOForm dto) {
-        Set<Role> roles = dto.getRoles()
+        Set<Role> roleEntities = dto.getRoles()
                 .stream()
                 .map(role -> roleConverter.toRoleEntity(role))
                 .collect(Collectors.toSet());
         return User.builder()
                 .email(dto.getEmail())
                 .password(dto.getPassword())
-                .roles(roles)
+                .roles(roleEntities)
                 .build();
     }
 
     @Override
     public UserDTOView toUserDTOView(User entity) {
-        Set<RoleDTOFormView> roleDTOFormViews = entity.getRoles()
+        Set<RoleDTOFormView> roleDTOs = entity.getRoles()
                 .stream()
                 .map(role -> roleConverter.toRoleDTOView(role))
                 .collect(Collectors.toSet());
         return UserDTOView.builder()
                 .email(entity.getEmail())
-                .roles(roleDTOFormViews)
+                .roles(roleDTOs)
+                .build();
+    }
+
+    @Override
+    public UserDTOView toUserDTOViewForm(UserDTOForm dto) {
+        Set<RoleDTOFormView> roleDTOs = dto.getRoles()
+                .stream()
+                .map(role -> roleConverter.toRoleDTOViewForm(role))
+                .collect(Collectors.toSet());
+        return UserDTOView.builder()
+                .email(dto.getEmail())
+                .roles(roleDTOs)
+                .build();
+    }
+
+    @Override
+    public UserDTOForm toUserDTOForm(UserDTOView dto) {
+        Set<RoleDTOForm> roleDTOs = dto.getRoles()
+                .stream()
+                .map(role -> roleConverter.toRoleDTOForm(role))
+                .collect(Collectors.toSet());
+        return UserDTOForm.builder()
+                .email(dto.getEmail())
+                .roles(roleDTOs)
+                .build();
+    }
+
+    @Override
+    public UserDTOForm toUserDTOFormEntity(User entity) {
+        Set<RoleDTOForm> roleDTOs = entity.getRoles()
+                .stream()
+                .map(role -> roleConverter.toRoleDTOFormEntity(role))
+                .collect(Collectors.toSet());
+        return UserDTOForm.builder()
+                .email(entity.getEmail())
+                .roles(roleDTOs)
                 .build();
     }
 }

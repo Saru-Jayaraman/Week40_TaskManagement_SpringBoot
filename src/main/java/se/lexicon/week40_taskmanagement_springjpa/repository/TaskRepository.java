@@ -2,15 +2,16 @@ package se.lexicon.week40_taskmanagement_springjpa.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Task;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     //Select tasks contain title
-    @Query("select t from Task t where t.title is not null")
-    List<Task> findByTaskContainTitle();
+    List<Task> findByTitleContaining(String title);
 
     //Select tasks by person's id
     List<Task> findByPerson_Id(Long person_id);

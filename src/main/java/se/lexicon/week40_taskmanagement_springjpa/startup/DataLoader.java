@@ -4,13 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import se.lexicon.week40_taskmanagement_springjpa.converter.PersonConverter;
 import se.lexicon.week40_taskmanagement_springjpa.converter.RoleConverter;
+import se.lexicon.week40_taskmanagement_springjpa.converter.TaskConverter;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.*;
-import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Task;
 import se.lexicon.week40_taskmanagement_springjpa.repository.PersonRepository;
 import se.lexicon.week40_taskmanagement_springjpa.repository.TaskRepository;
 import se.lexicon.week40_taskmanagement_springjpa.service.PersonService;
 import se.lexicon.week40_taskmanagement_springjpa.service.RoleService;
+import se.lexicon.week40_taskmanagement_springjpa.service.TaskService;
 import se.lexicon.week40_taskmanagement_springjpa.service.UserService;
 
 import java.time.LocalDate;
@@ -21,19 +23,25 @@ public class DataLoader implements CommandLineRunner {
 
     RoleService roleService;
     UserService userService;
+    TaskService taskService;
     PersonService personService;
-    PersonRepository personRepository;
     TaskRepository taskRepository;
+    PersonRepository personRepository;
+    TaskConverter taskConverter;
     RoleConverter roleConverter;
+    PersonConverter personConverter;
 
     @Autowired
-    public DataLoader(RoleService roleService, UserService userService, PersonService personService, PersonRepository personRepository, TaskRepository taskRepository, RoleConverter roleConverter) {
+    public DataLoader(RoleService roleService, UserService userService, TaskService taskService, PersonService personService, TaskRepository taskRepository, PersonRepository personRepository, TaskConverter taskConverter, RoleConverter roleConverter, PersonConverter personConverter) {
         this.roleService = roleService;
         this.userService = userService;
+        this.taskService = taskService;
         this.personService = personService;
-        this.personRepository = personRepository;
         this.taskRepository = taskRepository;
+        this.personRepository = personRepository;
+        this.taskConverter = taskConverter;
         this.roleConverter = roleConverter;
+        this.personConverter = personConverter;
     }
 
     @Transactional
@@ -89,8 +97,11 @@ public class DataLoader implements CommandLineRunner {
 
         System.out.println("-----------------------------PERSON SERVICE-----------------------------");
         System.out.println("----------------------------------SAVE----------------------------------");
-        PersonDTOFormSave person1 = new PersonDTOFormSave("Person1", userDTOForm1);
-        PersonDTOFormSave person2 = new PersonDTOFormSave("Person2", userDTOForm2);
+//        TaskDTOForm taskDTOForm1 = taskConverter.toTaskDTOForm(taskDTOView1);
+//        TaskDTOForm taskDTOForm2 = taskConverter.toTaskDTOForm(taskDTOView2);
+//        TaskDTOForm taskDTOForm3 = taskConverter.toTaskDTOForm(taskDTOView3);
+        PersonDTOFormSave person1 = new PersonDTOFormSave("Person1", null, userDTOForm1);
+        PersonDTOFormSave person2 = new PersonDTOFormSave("Person2", null, userDTOForm2);
 
         PersonDTOFormView personDTOView1 = personService.savePerson(person1);
         PersonDTOFormView personDTOView2 = personService.savePerson(person2);
@@ -111,13 +122,56 @@ public class DataLoader implements CommandLineRunner {
         System.out.println();
 
         System.out.println("------------------------------TASK SERVICE------------------------------");
-        System.out.println("--------------------------------REGISTER--------------------------------");
-        Task task1 = new Task("Fix light", null, LocalDate.now().plusDays(10), false);
-        Task task2 = new Task("Fix horn", null, LocalDate.now().plusDays(5), false);
-        Task task3 = new Task(null, null, LocalDate.now().minusDays(1), false);
-        taskRepository.save(task1);
-        taskRepository.save(task2);
-        taskRepository.save(task3);
+        System.out.println("----------------------------------SAVE----------------------------------");
+        TaskDTOFormSave task1 = new TaskDTOFormSave("Fix light", null, LocalDate.now().plusDays(10), false, null);
+        TaskDTOFormSave task2 = new TaskDTOFormSave("Fix horn", null, LocalDate.now().plusDays(5), false, null);
+        TaskDTOFormSave task3 = new TaskDTOFormSave("Check brake", "Sound is produced when applying brake", LocalDate.now().minusDays(1), false, null);
+
+        TaskDTOFormView taskDTOView1 = taskService.saveTask(task1);
+        TaskDTOFormView taskDTOView2 = taskService.saveTask(task2);
+        TaskDTOFormView taskDTOView3 = taskService.saveTask(task3);
+        System.out.println(taskDTOView1);
+        System.out.println(taskDTOView2);
+        System.out.println(taskDTOView3);
+
+        System.out.println("-------------------------------FIND BY ID-------------------------------");
+        TaskDTOFormView findTaskById = taskService.findById(taskDTOView1.getId());
+        System.out.println(findTaskById);
+
+        System.out.println("---------------------------------UPDATE---------------------------------");
+        taskService.update(new TaskDTOForm(taskDTOView1.getId(),"Fix light", "Brightness problem", LocalDate.now().plusDays(10), false, personConverter.toPersonDTOForm(personDTOView1)));
+        System.out.println("Task updated successfully!!!");
+
+        System.out.println("---------------------------------DELETE---------------------------------");
+        taskService.delete(taskDTOView2.getId());
+        System.out.println("Task deleted successfully!!!");
+
+        System.out.println("---------------------------ADD TASK TO PERSON---------------------------");
+        TaskDTOFormView addedTask = taskService.addTaskToPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3));
+        System.out.println(addedTask);
+
+        System.out.println("-------------------------FIND BY TITLE CONTAINS-------------------------");
+        String title = "Fix";
+        taskService.findByTaskContainTitle(title).forEach(System.out::println);
+
+        System.out.println("---------------------------FIND BY PERSON ID----------------------------");
+        taskService.findByPersonId(personDTOView1.getId()).forEach(System.out::println);
+
+        System.out.println("--------------------------FIND BY DONE STATUS---------------------------");
+        boolean done = true;
+        taskService.findByDone(done).forEach(System.out::println);
+
+        System.out.println("--------------------FIND BY DEADLINE BETWEEN 2 DATES--------------------");
+        taskService.findByDeadLineBetween(LocalDate.now().minusDays(10), LocalDate.now().plusDays(20)).forEach(System.out::println);
+
+        System.out.println("-------------------------FIND BY PERSON IS NULL-------------------------");
+        taskService.findByPersonIsNull().forEach(System.out::println);
+
+        System.out.println("------------------------FIND BY UNFINISHED TASKS------------------------");
+        taskService.findByDoneFalse().forEach(System.out::println);
+
+        System.out.println("-------------------------FIND BY OVERDUE TASKS--------------------------");
+        taskService.findByDoneFalseAndDeadLineAfter().forEach(System.out::println);
         System.out.println();
     }
 }

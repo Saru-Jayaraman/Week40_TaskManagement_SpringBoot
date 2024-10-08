@@ -32,10 +32,26 @@ public class RoleConverterImpl implements RoleConverter {
     }
 
     @Override
-    public RoleDTOForm toRoleDTOForm(RoleDTOFormView viewDTO) {
+    public RoleDTOFormView toRoleDTOViewForm(RoleDTOForm dto) {
+        return RoleDTOFormView.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .build();
+    }
+
+    @Override
+    public RoleDTOForm toRoleDTOForm(RoleDTOFormView dto) {
         return RoleDTOForm.builder()
-                .id(viewDTO.getId())
-                .name(viewDTO.getName())
+                .id(dto.getId())
+                .name(dto.getName())
+                .build();
+    }
+
+    @Override
+    public RoleDTOForm toRoleDTOFormEntity(Role entity) {
+        return RoleDTOForm.builder()
+                .id(entity.getId())
+                .name(entity.getName())
                 .build();
     }
 }
