@@ -23,7 +23,7 @@ public class Person {
     @Setter private String name;
 
     @OneToMany(mappedBy = "person")
-    @Setter private List<Task> taskList = new ArrayList<>();
+    @Setter private List<Task> taskList;
 
     @OneToOne
     @JoinColumn(name = "email")
@@ -44,6 +44,8 @@ public class Person {
         for(Task eachTask : tasks) {
             if(eachTask.getPerson() == null)
                 eachTask.setPerson(this);
+            if(this.taskList == null)
+                this.taskList = new ArrayList<>();
             this.taskList.add(eachTask);
         }
     }

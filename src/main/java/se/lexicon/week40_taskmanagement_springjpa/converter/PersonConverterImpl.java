@@ -60,34 +60,20 @@ public class PersonConverterImpl implements PersonConverter {
     @Override
     public PersonDTOFormView toPersonDTOView(Person entity) {
         UserDTOView userDTO = userConverter.toUserDTOView(entity.getUser());
-        List<TaskDTOFormView> taskDTOs = null;
-        if (entity.getTaskList() != null)
-            taskDTOs = entity.getTaskList()
-                .stream()
-                .map(task -> taskConverter.toTaskDTOView(task))
-                .toList();
         return PersonDTOFormView.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .user(userDTO)
-                .taskList(taskDTOs)
                 .build();
     }
 
     @Override
     public PersonDTOFormView toPersonDTOView(PersonDTOForm dto) {
         UserDTOView userDTO = userConverter.toUserDTOViewForm(dto.getUser());
-        List<TaskDTOFormView> taskDTOs = null;
-        if (dto.getTaskList() != null)
-            taskDTOs = dto.getTaskList()
-                    .stream()
-                    .map(task -> taskConverter.toTaskDTOViewForm(task))
-                    .toList();
         return PersonDTOFormView.builder()
                 .id(dto.getId())
                 .name(dto.getName())
                 .user(userDTO)
-                .taskList(taskDTOs)
                 .build();
     }
 
@@ -111,17 +97,10 @@ public class PersonConverterImpl implements PersonConverter {
     @Override
     public PersonDTOForm toPersonDTOFormEntity(Person entity) {
         UserDTOForm userEntity = userConverter.toUserDTOFormEntity(entity.getUser());
-        List<TaskDTOForm> taskDTOs = null;
-        if (entity.getTaskList() != null)
-            taskDTOs = entity.getTaskList()
-                    .stream()
-                    .map(task -> taskConverter.toTaskDTOFormEntity(task))
-                    .toList();
         return PersonDTOForm.builder()
                 .id(entity.getId())
                 .name(entity.getName())
                 .user(userEntity)
-                .taskList(taskDTOs)
                 .build();
     }
 }

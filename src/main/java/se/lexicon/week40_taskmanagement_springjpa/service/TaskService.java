@@ -30,5 +30,7 @@ public interface TaskService {
 
     List<TaskDTOFormView> findByDoneFalseAndDeadLineAfter();
 
-    TaskDTOFormView addTaskToPerson(Long personId, TaskDTOForm taskDTOForm);
+    List<TaskDTOFormView> addTaskToPerson(Long personId, TaskDTOForm... taskDTOForm);
+
+    void removeTaskFromPerson(Long personId, TaskDTOForm... taskDTOForm);
 }

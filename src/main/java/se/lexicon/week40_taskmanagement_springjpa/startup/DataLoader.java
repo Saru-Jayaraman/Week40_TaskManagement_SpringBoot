@@ -124,6 +124,7 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("------------------------------TASK SERVICE------------------------------");
         System.out.println("----------------------------------SAVE----------------------------------");
         TaskDTOFormSave task1 = new TaskDTOFormSave("Fix light", null, LocalDate.now().plusDays(10), false, null);
+//        TaskDTOFormSave task2 = new TaskDTOFormSave("Fix horn", null, LocalDate.now().plusDays(5), false, personConverter.toPersonDTOForm(personDTOView2));
         TaskDTOFormSave task2 = new TaskDTOFormSave("Fix horn", null, LocalDate.now().plusDays(5), false, null);
         TaskDTOFormSave task3 = new TaskDTOFormSave("Check brake", "Sound is produced when applying brake", LocalDate.now().minusDays(1), false, null);
 
@@ -143,19 +144,23 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Task updated successfully!!!");
 
         System.out.println("---------------------------------DELETE---------------------------------");
-        taskService.delete(taskDTOView2.getId());
-        System.out.println("Task deleted successfully!!!");
+//        taskService.delete(taskDTOView2.getId());
+//        System.out.println("Task deleted successfully!!!");
 
         System.out.println("---------------------------ADD TASK TO PERSON---------------------------");
-        TaskDTOFormView addedTask = taskService.addTaskToPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3));
-        System.out.println(addedTask);
+        List<TaskDTOFormView> addedTask = taskService.addTaskToPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3), taskConverter.toTaskDTOForm(taskDTOView2));
+        addedTask.forEach(System.out::println);
+
+        System.out.println("-------------------------REMOVE TASK FROM PERSON------------------------");
+        taskService.removeTaskFromPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3));
+        System.out.println("Task removed successfully!!!");
 
         System.out.println("-------------------------FIND BY TITLE CONTAINS-------------------------");
         String title = "Fix";
         taskService.findByTaskContainTitle(title).forEach(System.out::println);
 
         System.out.println("---------------------------FIND BY PERSON ID----------------------------");
-        taskService.findByPersonId(personDTOView1.getId()).forEach(System.out::println);
+        taskService.findByPersonId(personDTOView2.getId()).forEach(System.out::println);
 
         System.out.println("--------------------------FIND BY DONE STATUS---------------------------");
         boolean done = true;

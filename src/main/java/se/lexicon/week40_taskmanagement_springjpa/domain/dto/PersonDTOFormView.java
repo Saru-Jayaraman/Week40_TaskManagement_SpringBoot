@@ -8,7 +8,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "taskList")
 @Builder
 public class PersonDTOFormView {
     private Long id;

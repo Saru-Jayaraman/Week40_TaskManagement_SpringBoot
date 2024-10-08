@@ -122,11 +122,37 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public TaskDTOFormView addTaskToPerson(Long personId, TaskDTOForm dto) {
+    public List<TaskDTOFormView> addTaskToPerson(Long personId, TaskDTOForm... dto) {
         Person person = personRepository.findById(personId)
                 .orElseThrow(() -> new DataNotFoundException("Person not found with id: " + personId));
-        dto.setPerson(personConverter.toPersonDTOFormEntity(person));
-        update(dto);
-        return taskConverter.toTaskDTOViewForm(dto);
+        List<TaskDTOFormView> views = new ArrayList<>();
+
+        for(TaskDTOForm eachTaskForm : dto) {
+            //Adding Task to Person -> Then update
+            person.addTask(taskConverter.toTaskForm(eachTaskForm));
+            Person savedPerson = personRepository.save(person);
+
+            //Adding Person to Task -> Then update
+            eachTaskForm.setPerson(personConverter.toPersonDTOFormEntity(savedPerson));
+            update(eachTaskForm);
+            views.add(taskConverter.toTaskDTOViewForm(eachTaskForm));
+        }
+        return views;
+    }
+
+    @Override
+    public void removeTaskFromPerson(Long personId, TaskDTOForm... dto) {
+        Person person = personRepository.findById(personId)
+                .orElseThrow(() -> new DataNotFoundException("Person not found with id: " + personId));
+
+        for(TaskDTOForm eachTaskForm : dto) {
+            //Removing Task from Person -> Then update
+            person.removeTask(taskConverter.toTaskForm(eachTaskForm));
+            personRepository.save(person);
+
+            //Removing Person from Task -> Then update
+            eachTaskForm.setPerson(null);
+            update(eachTaskForm);
+        }
     }
 }
