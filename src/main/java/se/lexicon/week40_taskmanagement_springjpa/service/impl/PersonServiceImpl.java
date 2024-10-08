@@ -3,6 +3,7 @@ package se.lexicon.week40_taskmanagement_springjpa.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.lexicon.week40_taskmanagement_springjpa.converter.PersonConverter;
+import se.lexicon.week40_taskmanagement_springjpa.domain.dto.PersonDTOForm;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.PersonDTOFormSave;
 import se.lexicon.week40_taskmanagement_springjpa.domain.dto.PersonDTOFormView;
 import se.lexicon.week40_taskmanagement_springjpa.domain.entity.Person;
@@ -34,6 +35,28 @@ public class PersonServiceImpl implements PersonService {
         Person personEntity = personConverter.toPersonEntitySave(dtoFormSave);
         Person savedPerson = personRepository.save(personEntity);
         return personConverter.toPersonDTOView(savedPerson);
+    }
+
+    @Override
+    public PersonDTOFormView findById(Long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Person Id is not valid..."));
+        return personConverter.toPersonDTOView(person);
+    }
+
+    @Override
+    public PersonDTOFormView update(PersonDTOForm dto) {
+        Person person = personRepository.findById(dto.getId())
+                .orElseThrow(() -> new DataNotFoundException("Person Id is not valid..."));
+        person.setName(dto.getName());
+        return personConverter.toPersonDTOView(person);
+    }
+
+    @Override
+    public void delete(Long id) {
+        Person person = personRepository.findById(id)
+                .orElseThrow(() -> new DataNotFoundException("Person Id is not valid."));
+        personRepository.delete(person);
     }
 
     @Override

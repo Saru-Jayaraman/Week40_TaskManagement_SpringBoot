@@ -15,4 +15,15 @@ public class PersonDTOForm {
     private String name;
     private List<TaskDTOForm> taskList;
     private UserDTOForm user;
+
+    public PersonDTOForm(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public PersonDTOForm(Long id, String name, List<TaskDTOForm> taskList) {
+        this.id = id;
+        this.name = name;
+        this.taskList = taskList;
+    }
 }

@@ -97,9 +97,6 @@ public class DataLoader implements CommandLineRunner {
 
         System.out.println("-----------------------------PERSON SERVICE-----------------------------");
         System.out.println("----------------------------------SAVE----------------------------------");
-//        TaskDTOForm taskDTOForm1 = taskConverter.toTaskDTOForm(taskDTOView1);
-//        TaskDTOForm taskDTOForm2 = taskConverter.toTaskDTOForm(taskDTOView2);
-//        TaskDTOForm taskDTOForm3 = taskConverter.toTaskDTOForm(taskDTOView3);
         PersonDTOFormSave person1 = new PersonDTOFormSave("Person1", null, userDTOForm1);
         PersonDTOFormSave person2 = new PersonDTOFormSave("Person2", null, userDTOForm2);
 
@@ -119,7 +116,20 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("-----------------------FIND PERSON WITH USER EMAIL----------------------");
         PersonDTOFormView findPersonWithEmail =  personService.findPersonByUserEmail(userDTOForm1.getEmail());
         System.out.println(findPersonWithEmail);
+
+        System.out.println("-------------------------------FIND BY ID-------------------------------");
+        PersonDTOFormView findPersonById = personService.findById(personDTOView1.getId());
+        System.out.println(findPersonById);
+
+        System.out.println("---------------------------------UPDATE---------------------------------");
+        PersonDTOFormView updatePerson = personService.update(new PersonDTOForm(personDTOView1.getId(), "Person11"));
+        System.out.println(updatePerson);
+
+        System.out.println("---------------------------------DELETE---------------------------------");
+//        personService.delete(personDTOView2.getId());
+//        System.out.println("Person deleted successfully!!!");
         System.out.println();
+
 
         System.out.println("------------------------------TASK SERVICE------------------------------");
         System.out.println("----------------------------------SAVE----------------------------------");
@@ -148,12 +158,20 @@ public class DataLoader implements CommandLineRunner {
 //        System.out.println("Task deleted successfully!!!");
 
         System.out.println("---------------------------ADD TASK TO PERSON---------------------------");
-        List<TaskDTOFormView> addedTask = taskService.addTaskToPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3), taskConverter.toTaskDTOForm(taskDTOView2));
+        List<TaskDTOFormView> addedTask = taskService.addTaskToPerson(personDTOView1.getId(), taskConverter.toTaskDTOForm(taskDTOView3), taskConverter.toTaskDTOForm(taskDTOView2));
         addedTask.forEach(System.out::println);
 
+        System.out.println("-----------------------FIND PERSONS WITH NO TASKS-----------------------");
+        allPersonsWithoutTasks =  personService.findPersonsWithNoTasks();
+        allPersonsWithoutTasks.forEach(System.out::println);
+
         System.out.println("-------------------------REMOVE TASK FROM PERSON------------------------");
-        taskService.removeTaskFromPerson(personDTOView2.getId(), taskConverter.toTaskDTOForm(taskDTOView3));
+        taskService.removeTaskFromPerson(personDTOView1.getId(), taskConverter.toTaskDTOForm(taskDTOView3));
         System.out.println("Task removed successfully!!!");
+
+        System.out.println("-----------------------FIND PERSONS WITH NO TASKS-----------------------");
+        allPersonsWithoutTasks =  personService.findPersonsWithNoTasks();
+        allPersonsWithoutTasks.forEach(System.out::println);
 
         System.out.println("-------------------------FIND BY TITLE CONTAINS-------------------------");
         String title = "Fix";

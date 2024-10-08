@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
     //Find Persons who have no tasks
-    @Query("select p from Person p where size(p.taskList) = 0")
+    @Query(value = "select * from person p where id not in(select t.person_id from person p join task t on p.id = t.person_id and t.person_id is not null)", nativeQuery = true)
     List<Person> findPersonsWithNoTasks();
 
     //Find Person by User email
